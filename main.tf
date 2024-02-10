@@ -42,7 +42,7 @@ variable "region" {
 variable "admin_username" {
   description = "username of the VM."
   type        = string
-  default     = "azureadmin"
+  default     = "abdoRootAdmin"
 }
 
 # Define a Resource Group
@@ -53,28 +53,28 @@ resource "azurerm_resource_group" "rg" {
 
 # Define a public IP address
 resource "azurerm_public_ip" "webserver" {
-  name                = "${var.labelPrefix}-A05PublicIP"
+  name                = "${var.labelPrefix}-A05-PublicIP"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
 }
 # Define a vnet
 resource "azurerm_virtual_network" "vnet" {
-  name                = "${var.labelPrefix}-A05Vnet"
+  name                = "${var.labelPrefix}-A05-Vnet"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
 # Define a subnet
 resource "azurerm_subnet" "webserver" {
-  name                 = "${var.labelPrefix}-A05Subnet"
+  name                 = "${var.labelPrefix}-A05-Subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 # Define a NSG
 resource "azurerm_network_security_group" "webserver" {
-  name                = "${var.labelPrefix}-A05NSG"
+  name                = "${var.labelPrefix}-A05-NSG"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -105,12 +105,12 @@ resource "azurerm_network_security_group" "webserver" {
 
 # Define a NIC
 resource "azurerm_network_interface" "webserver" {
-  name                = "${var.labelPrefix}-A05Nic"
+  name                = "${var.labelPrefix}-A05-Nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = "${var.labelPrefix}-A05NicConfig"
+    name                          = "${var.labelPrefix}-A05-NicConfig"
     subnet_id                     = azurerm_subnet.webserver.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.webserver.id
@@ -132,7 +132,7 @@ data "cloudinit_config" "init" {
 }
 
 resource "azurerm_linux_virtual_machine" "webserver" {
-  name                = "${var.labelPrefix}-A05VM"
+  name                = "${var.labelPrefix}-A05-VM"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = "Standard_B1s"
